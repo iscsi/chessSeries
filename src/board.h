@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <array>
 
 const uint32_t BOARD_SQ_NUM = 120;
 
@@ -66,6 +67,38 @@ enum class SQUARE_120_POS : uint32_t
 	A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ
 };
 
+constexpr uint32_t convert120To64(uint32_t val)
+{
+	uint32_t res = (val / 10 - 2) * 8 + val % 10 - 1;
+	if (res > 63)
+		res = 64;
+	return res;
+}
+
+constexpr uint32_t convert64To120(uint32_t val)
+{
+	return (val / 8 + 2) * 10 + val % 8 + 1;
+}
+
+const struct SQUARE_64_TO_120 {
+	std::array<uint32_t, 64> data;
+	SQUARE_64_TO_120()
+	{
+		for (uint32_t i = 0; i < 64; ++i)
+			data[i] = convert64To120(i);
+	}
+} SQUARE_64_TO_120;
+
+const struct SQUARE_120_TO_64 {
+	std::array<uint32_t, BOARD_SQ_NUM> data;
+	SQUARE_120_TO_64()
+	{
+		for (uint32_t i = 0; i < 120; ++i)
+			data[i] = convert120To64(i);
+	}
+} SQUARE_120_TO_64;
+
+
 struct STATE {
 	int move;
 	int castlePerm;
@@ -97,5 +130,7 @@ struct BOARD {
 	int minPCE[static_cast<uint32_t>(COLOR::COLOR_SIZE)];//knight, bishpop
 
 	std::vector<STATE> history;
+
+	std::array<std::vector<uint32_t>, static_cast<uint32_t>(PIECE::PIECE_SIZE)> pieceList;
 
 } S_BOARD;
