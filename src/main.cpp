@@ -2,6 +2,10 @@
 #include "board.h"
 #include <cstdio>
 
+//init convertSQ 64<->120
+//init bitmasks
+//init hashkeys every piece has own random hash
+
 int main()
 {
 	printf("---------------------------------------\n");

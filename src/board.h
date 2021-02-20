@@ -64,7 +64,8 @@ enum class SQUARE_120_POS : uint32_t
 	A5 = 61, B5, C5, D5, E5, F5, G5, H5,
 	A6 = 71, B6, C6, D6, E6, F6, G6, H6,
 	A7 = 81, B7, C7, D7, E7, F7, G7, H7,
-	A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ
+	A8 = 91, B8, C8, D8, E8, F8, G8, H8, 
+	NO_SQ, OFFBOARD // ?! ez minek?
 };
 
 constexpr uint32_t convert120To64(uint32_t val)
@@ -133,4 +134,52 @@ struct BOARD {
 
 	std::array<std::vector<uint32_t>, static_cast<uint32_t>(PIECE::PIECE_SIZE)> pieceList;
 
+	void resetBoard()
+	{
+		//clear pieces set OFFBOARD
+
+		//valid squares set EMPTY
+
+		//clear pwns
+		//clear bigPce
+		//clear majPce
+		//clear minPce
+
+		//clear numberOfPieces
+
+		//kings -> NO_SQ
+
+		//side BOTH
+
+		//enPas = NO_SQ
+
+		//ply = 0
+		//hisPl = 0
+
+		//castlePerm = 0
+
+		//posKey =0 
+
+
+
+
+	}
+
+	uint64_t getHash() const
+	{
+		uint64_t res = 0;
+		for (uint32_t sq = 0; sq < BOARD_SQ_NUM; ++sq)
+		{
+			//if its in the board, and not empty
+			//then generate hash
+		}
+
+		//add side
+
+		//add castles
+
+		//enPas
+
+		return res;
+	}
 } S_BOARD;
