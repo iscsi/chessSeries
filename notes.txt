@@ -1,0 +1,252 @@
+- 14-16 parse FEN
+- 17 print board 
+-start from rank 8 ( to the rank 8 be on the top)
+-print side
+-enPas
+-castle
+-Poskey
+
+-18 piece list
+-big Piece, major, min Number of Pieces need only 2 array, black white
+-introduce material[2] <- contains the pieceval sum by colour
+
+int pieceVal[13] = {0, 100, 325, 325, 550, 1000, 50000, 100, 325, 325, 550, 1000, 50000 };
+
+create updateListMaterial(S_BOARD pos)
+{
+	go through board piece = pos->pieces[actualField]
+
+		update 
+		int numberOfPieces[static_cast<uint32_t>(PIECE::PIECE_SIZE)];
+		int bigPCE[static_cast<uint32_t>(COLOR::COLOR_SIZE)];//not pawn
+		int majPCE[static_cast<uint32_t>(COLOR::COLOR_SIZE)];//rook queen
+		int minPCE[static_cast<uint32_t>(COLOR::COLOR_SIZE)];//knight, bishpop
+
+		numberOfPieces
+
+		update material 
+
+		update piece List
+
+		update KingSq
+
+		update pawns, colour and both (it has to convert it 64 bit)
+
+
+}
+
+19 Rank and File Arrays
+
+create rank120[], file120[] ..., other is offBoard
+
+20  continue updateListMaterial func fill pos->pawns using piece
+
+add lot of assert for double check
+
+21: 
+
+Boar Representation
+Fen
+Setup a position
+
+Next: 
+-	SqAttacked(sq, side) (important for king, castle)
+-	setup move structure (use on int32)
+- 	Do / Undo()
+
+--Milestone : Perft() testing from a position how much step can make depth (1..6)
+
+Skeleton evalution()
+Search;
+
+Connect GUI
+
+22: squareAttack
+attack.c
+
+isSquareAttacked(int sqaure, int side, Board pos)
+{
+	if(side == WHITE)
+	-11, -9
+		return true;
+	else
+	+11, 9 
+		return true;
+}
+
+check the opposite colour pawns on the square 
+
+knight, bishop etc
+
+KnDir[8] = {-8, -19, -21, -12, 8 19, 21, 12}..
+
+auxiliary functions
+
+ isPieceBishopOrQueen and opposite colour
+ is PieceKnight
+
+ debugging show the square attacked 
+
+
+24: move format
+
+struct S_MOVE {
+	int move;
+	int score;
+}
+
+
+move From (7 bit) , To (7 bit), Captured piece (4 bit), EP (en passant capture) (1 bit), Pawn Start (1 bit), Promoted piece (4 bit), Castle
+
+25: 
+
+create retrieve functions from the move  like FromSquare(int move) ..
+
+27: printmove 
+from, to, move: a2h7q (the q is the promoted piece)
+
+28: movegeneration
+
+
+struc Movelist
+{
+	vector<S_MOVE> ..
+}
+
+
+MoveGet(board, movelist)
+{
+	loop all pieces
+		-> Sloder loop exch dir add move
+			-> Addmove movelist.push_back(move);
+}
+
+AddQuietMove(board pos, int move, movelist) {
+	movelist.push_back({move, 0 (score)});
+}
+
+AddCaptureMove(board pos, int move, movelist) {
+	movelist.push_back({move, 0 (score)});
+}
+
+AddEnPassantMove(board pos, int move, movelist) {
+	movelist.push_back({move, 0 (score)});
+}
+
+
+void GenerateAllMove(board pos, movelist)
+{
+	movelist.clear();
+}
+
+29: validation
+
+validate.c
+
+bool isSqOnBoard(const int sq)
+{
+	
+}
+
+bool SideValid(const int side) {
+	return side == WHITE || side == BLACK;
+}
+
+in FileRankValid(const int fr)
+{
+	return fr >= 0 && fr <=7;
+}
+
+int PieceValidEmpty(const int pce) {
+	return pce >== EMPTY && pce <= bk;
+}
+
+int PieceValid(const int pce) {
+	return pce >== wp && pce <= bk;	
+}
+
+30: 
+
+printMoveList() {
+	
+}
+
+white pawn:
+
++10 normal move (or +20 if it in the second rank)
++9, +11 capture move
+7-th rank promote
+
+void AddWhitePawnCaptureMove(board pos, int from, int to, int cap, movelist)
+{
+	if(rank == 7)
+	{
+
+		//move from to, cap, promote
+		AddCaptureMove(pos, move(from,to, cap, wQ), list)
+		AddCaptureMove(pos, move(from,to, cap, wR), list)
+		AddCaptureMove(pos, move(from,to, cap, wB), list)
+		AddCaptureMove(pos, move(from,to, cap, wK), list)
+	} else
+	{
+		AddCaptureMove(pos, move(from,to, cap, empty), list)
+	}
+}
+
+void AddWhitePawnMove(board pos, int from, int to, int cap, movelist)
+{
+	if(rank == 7)
+	{
+
+		//move from to, cap, promote
+		AddCaptureMove(pos, move(from,to, empty, wQ), list)
+		AddCaptureMove(pos, move(from,to, empty, wR), list)
+		AddCaptureMove(pos, move(from,to, empty, wB), list)
+		AddCaptureMove(pos, move(from,to, empty, wK), list)
+	} else
+	{
+		AddCaptureMove(pos, move(from,to, cap, empty), list)
+	}
+}
+
+void GenerateAllMove(board pos, movelist)
+{
+	movelist.clear();
+
+	int pce = empty;
+	int side = pos.side
+	int sq = 0; int t_sq = 0;
+	int pceNum = 0;
+
+	if(side == WHITE) {
+		//go through the white pawns
+		for(pceNum = 0; pceNum < pos->pceNum[wp]; ++pceNum){
+			sq = pos->pList[wp][pceNum];
+			if(pos->pieces[sq+10] == EMPTY){
+				AddWhitePawnMove(pos,sq, sq+10,list);
+			}
+			if(ranksBrd[sq]==Rank_2 && pos->pieces[sq20] == EMTPY) {
+				AddQuietMove(pos, MOVE(Sq,(sq+20),empty, empty, MFLAGPS), list)
+			}
+		}
+		//capture moves
+		if(!sqoffboard(sq) && pieceVol[pos->pieces[sq+9] == BLACK])
+		{
+			AddWhiteCaptureMove(pos, sq, sq+9, pos->pieces[sq+9], list)
+		}
+		if(!sqoffboard(sq) && pieceVol[pos->pieces[sq+11] == BLACK])
+		{
+			AddWhiteCaptureMove(pos, sq, sq+11, pos->pieces[sq+11], list)
+		}
+		//en passant
+		if(sq + 9 == pos->enPas) {
+			AddCaptureMove(pos, move(sq, sq+9, empty, empty, MFLAGEP, list))
+		}
+		if(sq + 11 == pos->enPas) {
+			AddCaptureMove(pos, move(sq, sq+11, empty, empty, MFLAGEP, list))
+		}
+	}
+}
+
+31: black Pawns, rank2 -> rank7 +9,+11 -> -9, -11 Black ->White
+
